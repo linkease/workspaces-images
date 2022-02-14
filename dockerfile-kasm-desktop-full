@@ -39,6 +39,26 @@ RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefo
 # RUN bash $INST_SCRIPTS/certificates/install_ca_cert.sh && rm -rf $INST_SCRIPTS/certificates/
 
 
+COPY ./src/ubuntu/install/remmina $INST_SCRIPTS/remmina/
+RUN bash $INST_SCRIPTS/remmina/install_remmina.sh  && rm -rf $INST_SCRIPTS/remmina/
+
+COPY ./src/ubuntu/install/remmina/custom_startup.sh $STARTUPDIR/custom_startup.sh
+RUN chmod +x $STARTUPDIR/custom_startup.sh
+RUN chmod 755 $STARTUPDIR/custom_startup.sh
+
+RUN mkdir $HOME/.config/remmina/
+COPY ./src/ubuntu/install/remmina/remmina.pref $HOME/.config/remmina/remmina.pref
+RUN chown -R 1000:1000 $HOME/.config/remmina/
+
+ENV XMODIFIERS="@im=ibus"
+ENV QT_IM_MODULE="ibus"
+ENV GTK_IM_MODULE="ibus"
+
+RUN mkdir -p /tmp/tools/
+COPY ./src/custom/ttf-wps-fonts /tmp/tools/ttf-wps-fonts
+RUN ls /tmp/tools && bash /tmp/tools/ttf-wps-fonts/install.sh && rm -rf /tmp/tools
+
+# RUN apt update && apt install -y sudo libxkbcommon-x11-0 libxcb-xinerama0 libxslt-dev ibus ibus-sunpinyin ttf-mscorefonts-installer fonts-wqy-zenhei ibus-gtk ibus-gtk3
 
 ######### End Customizations ###########
 
