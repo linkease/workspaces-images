@@ -1,23 +1,10 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="remmina"
-PGREP="remmina"
-DEFAULT_ARGS=""
+START_COMMAND="/usr/bin/vncviewer"
+PGREP="vncviewer"
 MAXIMUS="false"
+DEFAULT_ARGS=""
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
-
-update_profile() {
-  if [ -n "$REMMINA_OPTIONS" ] && [ -n "$REMMINA_PROFILE" ] ; then
-        R_OPTIONS=""
-        for i in ${REMMINA_OPTIONS//,/ }
-        do
-            R_OPTIONS="$R_OPTIONS --set-option $i"
-        done
-
-        remmina --update-profile $REMMINA_PROFILE $R_OPTIONS
-        unset REMMINA_OPTIONS
-  fi
-}
 
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit
 eval set -- "$options"
@@ -77,8 +64,7 @@ kasm_startup() {
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
                 set +e
-                update_profile
-                $START_COMMAND $ARGS $URL $REMMINA_PROFILE
+                $START_COMMAND $ARGS $URL
                 set -e
             fi
             sleep 1
